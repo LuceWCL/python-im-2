@@ -78,18 +78,37 @@ class Sentence:
         Args:
             line (str): a line of an orfeo file with a word informations
         """
-        pass  # TODO: remplacer par du vrai code !
+        #ajouter un MOT(avec tous les arguments) à la liste de mots danns PHRASE
+        self.words.append(Word(*line.strip().split("\t")))
+        #on crée UNE liste avec à partir de la ligne 
+        #python pense que la liste est un argument et tous les autres champs vonts être des _
+        #débaler une séquence avec * : prend les éléments de la liste et les mets 1 par 1 dans les agts
+        # strip retire \n
+        #pour débaler dico **
 
 
 def parse_file(filename):
     """
+    Create list
     Turns a file into a list of sentences
     Args: 
         filename (str): the file path
     Return:
-        list of dicts (sents) of tuples (words)
+        list of Sentence
     """
-    pass # TODO: remplacer par du vrai code !
+    sentences = [] #on va accumuler les phrases ici (liste)
+    with open(filename) as fichier:
+        sentence = Sentence() #contient objet - on crée la phrase où on va ajouter des mots
+        for line in fichier:
+            if line.startswith("#"):
+                continue
+            if not line.strip(): #retirer les caractères d'espace au début et à la fin - la ligne vide sépare 2 phrases
+                sentences.append(sentence)
+                sentence = Sentence() #on met à jour la phrase "courante"
+            else:  #on lit un mot et on l'ajout à la phrase
+                sentence.add_word(line)
+    return sentences
+    
 
 
 def number_of_tokens(sentences, category=None):
@@ -102,8 +121,20 @@ def number_of_tokens(sentences, category=None):
     Return:
         the count of words in sentences of category
     """
-    pass # TODO: remplacer par du vrai code !
-
+    #si catégore = NON on prend tous les mots
+    #sinon on prends tous les mots avec la bonne catégorie
+#    return sum([word for word in sentence.words 
+#               for sentence in sentences 
+#               if category is None or word.upos == category])
+    somme = 0 
+    for sentence in sentences:
+        for word in sentence.words:
+            if category is None:
+                somme =+1
+            elif word.upos == category:
+                somme += 1
+    return somme
+                
 
 def ments_not_adv(sentences):
     """
@@ -113,7 +144,12 @@ def ments_not_adv(sentences):
     Return:
         the list of words
     """
-    pass # TODO: remplacer par du vrai code !
+    ments = []
+    for sentence in sentences:
+        for word in sentence.words:
+            if word.lemma.endswith("ment") and word.upos != 'ADV':
+                ments.append(word)
+    return ments
 
 
 sentences = parse_file('fr_gsd-ud-test.conllu')
