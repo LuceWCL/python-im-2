@@ -19,13 +19,18 @@ import re
 
 with open("7.0-testcase.txt", "r",encoding="utf-8") as file:
     for ligne in file:
-        lignes = ligne.strip()
-#        print(len(line))
+        lignes = ligne.strip("\n") #par défaut aucun caractère blanc qui se trouve en début ou fin de ligne
         if "spam" in lignes:
             print("a")
-        if len(lignes)>=5 and lignes.endswith("z")==True:
+        elif len(lignes)>=5 and lignes.endswith("z")==True:
             print("b")
-        mail = re.search(r'(\w+\.\w+\@\w+\.\w+)',lignes)
-        if mail is not None:
+        elif re.search(r'\w+\.\w+\@\w+\.\w+',lignes):
+            mail = re.search(r'(\w+\.\w+\@\w+\.\w+)',lignes)
             print(mail.group(1))
+        elif lignes[:3] == lignes[-3:]:
+            print("d")
+        elif lignes == lignes[::-1]:
+            print("e")
+        else:
+            print("Nope")
         
